@@ -15,13 +15,17 @@ import {
 
 import Header from "./components/Header";
 import AddExpense from "./components/AddExpense";
-import BudgetManagement from "./components/BudgetManagement";
 import Expenses from "./pages/Expenses";
 
 function App() {
+  // ================= FORM STATES =================
+
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("Food");
+  const [date, setDate] = useState("");
+
+  // ================= EXPENSES =================
 
   const [expenses, setExpenses] = useState(() => {
     const savedExpenses = localStorage.getItem("expenses");
@@ -33,7 +37,7 @@ function App() {
     return [];
   });
 
-  const transactionCount = expenses.length;
+  // ================= BUDGET =================
 
   const [totalmoney, setTotalmoney] = useState(() => {
     const savedBudget = localStorage.getItem("budget");
@@ -45,23 +49,29 @@ function App() {
     return "";
   });
 
-  const [date, setDate] = useState("");
+  // ================= EDIT =================
+
   const [editExpense, setEditExpense] = useState(null);
+
+  // ================= SEARCH & FILTER =================
 
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
 
-  // Save expenses to LocalStorage
+  // ================= SAVE EXPENSES =================
+
   useEffect(() => {
     localStorage.setItem("expenses", JSON.stringify(expenses));
   }, [expenses]);
 
-  // Save budget to LocalStorage
+  // ================= SAVE BUDGET =================
+
   useEffect(() => {
     localStorage.setItem("budget", totalmoney);
   }, [totalmoney]);
 
-  // Clear form
+  // ================= CLEAR FORM =================
+
   const clearForm = () => {
     setDescription("");
     setAmount("");
@@ -70,7 +80,8 @@ function App() {
     setEditExpense(null);
   };
 
-  // Add expense
+  // ================= ADD EXPENSE =================
+
   const addExpense = () => {
     if (!description || !amount || Number(amount) <= 0 || !date) {
       alert("Please enter a valid description, amount, and date.");
@@ -89,7 +100,8 @@ function App() {
     clearForm();
   };
 
-  // Start editing an expense
+  // ================= START EDIT =================
+
   const startEdit = (expense) => {
     setDescription(expense.description);
     setAmount(expense.amount);
@@ -98,7 +110,8 @@ function App() {
     setEditExpense(expense);
   };
 
-  // Update expense
+  // ================= UPDATE EXPENSE =================
+
   const updateExpense = () => {
     if (!description || !amount || Number(amount) <= 0 || !date) {
       alert("Please enter a valid description, amount, and date.");
@@ -123,7 +136,8 @@ function App() {
     clearForm();
   };
 
-  // Delete expense
+  // ================= DELETE EXPENSE =================
+
   const deleteExpense = (expenseToDelete) => {
     const updatedExpenses = expenses.filter(
       (expense) => expense !== expenseToDelete
@@ -132,15 +146,22 @@ function App() {
     setExpenses(updatedExpenses);
   };
 
-  // Calculate total spending
+  // ================= TOTAL SPENDING =================
+
   const total = expenses.reduce((total, expense) => {
     return total + Number(expense.amount);
   }, 0);
 
-  // Calculate remaining money
+  // ================= TRANSACTION COUNT =================
+
+  const transactionCount = expenses.length;
+
+  // ================= REMAINING MONEY =================
+
   const remainingMoney = Number(totalmoney) - total;
 
-  // Category totals
+  // ================= CATEGORY TOTALS =================
+
   const categoryTotals = expenses.reduce((acc, expense) => {
     if (acc[expense.category]) {
       acc[expense.category] += Number(expense.amount);
@@ -151,7 +172,8 @@ function App() {
     return acc;
   }, {});
 
-  // Chart data
+  // ================= CHART DATA =================
+
   const chartData = Object.entries(categoryTotals).map(
     ([category, amount]) => ({
       category,
@@ -159,7 +181,8 @@ function App() {
     })
   );
 
-  // Budget percentage
+  // ================= BUDGET PERCENTAGE =================
+
   const budgetPercentage = totalmoney
     ? Math.min((total / Number(totalmoney)) * 100, 100)
     : 0;
@@ -168,11 +191,14 @@ function App() {
     ? (total / Number(totalmoney)) * 100
     : 0;
 
+  // ================= RETURN =================
+
   return (
     <BrowserRouter>
       <Routes>
 
         {/* ================= DASHBOARD ================= */}
+
         <Route
           path="/"
           element={
@@ -180,10 +206,13 @@ function App() {
 
               <Header
                 totalmoney={totalmoney}
+                setTotalmoney={setTotalmoney}
                 total={total}
                 remainingMoney={remainingMoney}
                 transactionCount={transactionCount}
               />
+
+              {/* ================= ADD EXPENSE ================= */}
 
               <AddExpense
                 date={date}
@@ -199,11 +228,14 @@ function App() {
                 addExpense={addExpense}
               />
 
-              {/* Analytics */}
+              {/* ================= ANALYTICS ================= */}
+
               <div className="analytics">
 
                 {/* Spending Overview */}
+
                 <div className="analytics-card">
+
                   <h2>Spending Overview</h2>
 
                   <p>Category-wise expense analysis</p>
@@ -214,7 +246,9 @@ function App() {
                     </div>
                   ) : (
                     <ResponsiveContainer width="100%" height={300}>
+
                       <BarChart data={chartData}>
+
                         <CartesianGrid strokeDasharray="3 3" />
 
                         <XAxis dataKey="category" />
@@ -224,12 +258,16 @@ function App() {
                         <Tooltip />
 
                         <Bar dataKey="amount" />
+
                       </BarChart>
+
                     </ResponsiveContainer>
                   )}
+
                 </div>
 
                 {/* Budget Status */}
+
                 <div className="analytics-card">
 
                   <h2>Budget Status</h2>
@@ -275,28 +313,26 @@ function App() {
 
               </div>
 
-              {/* View Expenses */}
+              {/* ================= VIEW EXPENSES ================= */}
+
               <div style={{ marginBottom: "30px" }}>
 
                 <Link to="/expenses">
+
                   <button>
                     View All Expenses
                   </button>
+
                 </Link>
 
               </div>
-
-              <BudgetManagement
-                totalmoney={totalmoney}
-                setTotalmoney={setTotalmoney}
-                remainingMoney={remainingMoney}
-              />
 
             </div>
           }
         />
 
         {/* ================= EXPENSES PAGE ================= */}
+
         <Route
           path="/expenses"
           element={
@@ -305,9 +341,11 @@ function App() {
               <div style={{ marginBottom: "25px" }}>
 
                 <Link to="/">
+
                   <button>
                     ← Back to Dashboard
                   </button>
+
                 </Link>
 
               </div>
