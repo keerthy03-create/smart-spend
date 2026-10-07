@@ -364,3 +364,19 @@ button:hover {
     width: 100%;
   }
 }
+
+html {
+  color-scheme: light;
+}
+
+html,
+body {
+  color: #1f2937;
+  background: #f5f7fb;
+}
+
+h1,
+h2,
+h3 {
+  color: #1f2937;
+}
