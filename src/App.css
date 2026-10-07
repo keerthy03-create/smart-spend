@@ -375,8 +375,76 @@ body {
   background: #f5f7fb;
 }
 
-h1,
-h2,
-h3 {
-  color: #1f2937;
+/* Dark Mode */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #111827;
+    color: #f9fafb;
+  }
+
+  .header h1,
+  .analytics-card h2,
+  .analytics-card h3,
+  .expense-form h2,
+  .transactions h2,
+  .budget-section h2,
+  .dashboard-card h2 {
+    color: #f9fafb;
+  }
+
+  .header p,
+  .dashboard-card span,
+  .dashboard-card p,
+  .analytics-card p,
+  .budget-section p,
+  .transaction-header p {
+    color: #d1d5db;
+  }
+
+  .dashboard-card,
+  .expense-form,
+  .transactions,
+  .budget-section,
+  .analytics-card {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  input,
+  select {
+    background: #111827;
+    color: #f9fafb;
+    border-color: #4b5563;
+  }
+
+  input::placeholder {
+    color: #9ca3af;
+  }
+
+  select option {
+    background: #1f2937;
+    color: #f9fafb;
+  }
+
+  .transactions li {
+    border-bottom-color: #374151;
+  }
+
+  .expense-name span {
+    background: #374151;
+    color: #d1d5db;
+  }
+
+  .expense-date span {
+    color: #9ca3af;
+  }
+
+  .empty-message {
+    color: #9ca3af;
+  }
+
+  .progress-bar {
+    background: #374151;
+  }
 }

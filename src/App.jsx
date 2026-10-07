@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+
 import "./App.css";
 
 import {
@@ -14,6 +16,7 @@ import {
 import Header from "./components/Header";
 import AddExpense from "./components/AddExpense";
 import BudgetManagement from "./components/BudgetManagement";
+import Expenses from "./pages/Expenses";
 
 function App() {
   const [description, setDescription] = useState("");
@@ -44,17 +47,21 @@ function App() {
 
   const [date, setDate] = useState("");
   const [editExpense, setEditExpense] = useState(null);
+
   const [search, setSearch] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
 
+  // Save expenses to LocalStorage
   useEffect(() => {
     localStorage.setItem("expenses", JSON.stringify(expenses));
   }, [expenses]);
 
+  // Save budget to LocalStorage
   useEffect(() => {
     localStorage.setItem("budget", totalmoney);
   }, [totalmoney]);
 
+  // Clear form
   const clearForm = () => {
     setDescription("");
     setAmount("");
@@ -63,29 +70,7 @@ function App() {
     setEditExpense(null);
   };
 
-  const updateExpense = () => {
-    if (!description || !amount || Number(amount) <= 0 || !date) {
-      alert("Please enter a valid description, amount, and date.");
-      return;
-    }
-
-    const updatedExpenses = expenses.map((i) => {
-      if (i === editExpense) {
-        return {
-          description,
-          amount,
-          category,
-          date,
-        };
-      }
-
-      return i;
-    });
-
-    setExpenses(updatedExpenses);
-    clearForm();
-  };
-
+  // Add expense
   const addExpense = () => {
     if (!description || !amount || Number(amount) <= 0 || !date) {
       alert("Please enter a valid description, amount, and date.");
@@ -100,41 +85,73 @@ function App() {
     };
 
     setExpenses([...expenses, newExpense]);
+
     clearForm();
   };
 
-  const deleteExpense = (i) => {
-    const updated = expenses.filter((j) => {
-      return j !== i;
+  // Start editing an expense
+  const startEdit = (expense) => {
+    setDescription(expense.description);
+    setAmount(expense.amount);
+    setCategory(expense.category);
+    setDate(expense.date);
+    setEditExpense(expense);
+  };
+
+  // Update expense
+  const updateExpense = () => {
+    if (!description || !amount || Number(amount) <= 0 || !date) {
+      alert("Please enter a valid description, amount, and date.");
+      return;
+    }
+
+    const updatedExpenses = expenses.map((expense) => {
+      if (expense === editExpense) {
+        return {
+          description,
+          amount,
+          category,
+          date,
+        };
+      }
+
+      return expense;
     });
 
-    setExpenses(updated);
+    setExpenses(updatedExpenses);
+
+    clearForm();
   };
 
-  const startEdit = (i) => {
-    setDescription(i.description);
-    setAmount(i.amount);
-    setCategory(i.category);
-    setDate(i.date);
-    setEditExpense(i);
+  // Delete expense
+  const deleteExpense = (expenseToDelete) => {
+    const updatedExpenses = expenses.filter(
+      (expense) => expense !== expenseToDelete
+    );
+
+    setExpenses(updatedExpenses);
   };
 
-  const total = expenses.reduce((total, a) => {
-    return total + Number(a.amount);
+  // Calculate total spending
+  const total = expenses.reduce((total, expense) => {
+    return total + Number(expense.amount);
   }, 0);
 
+  // Calculate remaining money
   const remainingMoney = Number(totalmoney) - total;
 
-  const categoryTotals = expenses.reduce((acc, i) => {
-    if (acc[i.category]) {
-      acc[i.category] += Number(i.amount);
+  // Category totals
+  const categoryTotals = expenses.reduce((acc, expense) => {
+    if (acc[expense.category]) {
+      acc[expense.category] += Number(expense.amount);
     } else {
-      acc[i.category] = Number(i.amount);
+      acc[expense.category] = Number(expense.amount);
     }
 
     return acc;
   }, {});
 
+  // Chart data
   const chartData = Object.entries(categoryTotals).map(
     ([category, amount]) => ({
       category,
@@ -142,12 +159,7 @@ function App() {
     })
   );
 
-  const filteredExpenses = expenses.filter(
-    (i) =>
-      i.description.toLowerCase().includes(search.toLowerCase()) &&
-      (filterCategory === "All" || i.category === filterCategory)
-  );
-
+  // Budget percentage
   const budgetPercentage = totalmoney
     ? Math.min((total / Number(totalmoney)) * 100, 100)
     : 0;
@@ -157,172 +169,165 @@ function App() {
     : 0;
 
   return (
-    <div className="app">
+    <BrowserRouter>
+      <Routes>
 
-      {/* Header + Dashboard */}
-      <Header
-        totalmoney={totalmoney}
-        total={total}
-        remainingMoney={remainingMoney}
-        transactionCount={transactionCount}
-      />
+        {/* ================= DASHBOARD ================= */}
+        <Route
+          path="/"
+          element={
+            <div className="app">
 
-      {/* Add Expense */}
-      <AddExpense
-        date={date}
-        setDate={setDate}
-        description={description}
-        setDescription={setDescription}
-        amount={amount}
-        setAmount={setAmount}
-        category={category}
-        setCategory={setCategory}
-        editExpense={editExpense}
-        updateExpense={updateExpense}
-        addExpense={addExpense}
-      />
+              <Header
+                totalmoney={totalmoney}
+                total={total}
+                remainingMoney={remainingMoney}
+                transactionCount={transactionCount}
+              />
 
-      {/* Analytics */}
-      <div className="analytics">
+              <AddExpense
+                date={date}
+                setDate={setDate}
+                description={description}
+                setDescription={setDescription}
+                amount={amount}
+                setAmount={setAmount}
+                category={category}
+                setCategory={setCategory}
+                editExpense={editExpense}
+                updateExpense={updateExpense}
+                addExpense={addExpense}
+              />
 
-        <div className="analytics-card">
-          <h2>Spending Overview</h2>
-          <p>Track where your money is going</p>
+              {/* Analytics */}
+              <div className="analytics">
 
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="category" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="amount" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+                {/* Spending Overview */}
+                <div className="analytics-card">
+                  <h2>Spending Overview</h2>
 
-        <div className="analytics-card">
-          <h2>Budget Status</h2>
-          <p>Monitor your remaining balance</p>
+                  <p>Category-wise expense analysis</p>
 
-          <div className="budget-info">
-            <h3>₹{remainingMoney}</h3>
-            <span>Remaining money</span>
-          </div>
+                  {chartData.length === 0 ? (
+                    <div className="empty-message">
+                      No spending data available yet.
+                    </div>
+                  ) : (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={chartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
 
-          <div className="progress-bar">
-            <div
-              className="progress"
-              style={{
-                width: `${budgetPercentage}%`,
-              }}
-            ></div>
-          </div>
+                        <XAxis dataKey="category" />
 
-          <p>
-            {totalmoney === ""
-              ? "Set a budget to track your spending"
-              : remainingMoney < 0
-              ? `${Math.round(
-                  actualBudgetPercentage
-                )}% of your budget used - ⚠️ Budget exceeded`
-              : remainingMoney === 0
-              ? "⚠️ Budget fully used"
-              : "✅ You are within your budget"}
-          </p>
-        </div>
+                        <YAxis />
 
-      </div>
+                        <Tooltip />
 
-      {/* Transactions */}
-      <section className="transactions">
-
-        <div className="transaction-header">
-
-          <div>
-            <h2>Recent Transactions</h2>
-            <p>Your latest expenses</p>
-          </div>
-
-          <div className="filters">
-
-            <input
-              type="search"
-              placeholder="Search expenses..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-            >
-              <option>All</option>
-              <option>Food</option>
-              <option>Transport</option>
-              <option>Skincare</option>
-              <option>Clothes</option>
-              <option>Accessories</option>
-            </select>
-
-          </div>
-
-        </div>
-
-        <ul>
-          {filteredExpenses.length === 0 ? (
-            <li className="empty-message">
-              {expenses.length === 0
-                ? "No expenses added yet."
-                : "No matching expenses found."}
-            </li>
-          ) : (
-            filteredExpenses.map((i) => (
-              <li key={i.date + i.description}>
-
-                <div className="expense-name">
-                  <strong>{i.description}</strong>
-                  <span>{i.category}</span>
+                        <Bar dataKey="amount" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
                 </div>
 
-                <div className="expense-amount">
-                  <strong>₹{i.amount}</strong>
+                {/* Budget Status */}
+                <div className="analytics-card">
+
+                  <h2>Budget Status</h2>
+
+                  <p>
+                    Track your spending against your budget
+                  </p>
+
+                  <div className="budget-info">
+
+                    <h3>₹{total}</h3>
+
+                    <span>
+                      spent out of ₹{totalmoney || 0}
+                    </span>
+
+                  </div>
+
+                  <div className="progress-bar">
+
+                    <div
+                      className="progress"
+                      style={{
+                        width: `${budgetPercentage}%`,
+                      }}
+                    ></div>
+
+                  </div>
+
+                  <p>
+
+                    {totalmoney === ""
+                      ? "Set a budget to track your progress."
+                      : actualBudgetPercentage > 100
+                      ? "⚠️ You have exceeded your budget."
+                      : `${Math.round(
+                          actualBudgetPercentage
+                        )}% of your budget used`}
+
+                  </p>
+
                 </div>
 
-                <div className="expense-date">
-                  <span>
-                    {new Date(i.date).toLocaleDateString("en-IN", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </span>
-                </div>
+              </div>
 
-                <div className="expense-actions">
-                  <button onClick={() => startEdit(i)}>
-                    Edit
+              {/* View Expenses */}
+              <div style={{ marginBottom: "30px" }}>
+
+                <Link to="/expenses">
+                  <button>
+                    View All Expenses
                   </button>
+                </Link>
 
-                  <button onClick={() => deleteExpense(i)}>
-                    Delete
+              </div>
+
+              <BudgetManagement
+                totalmoney={totalmoney}
+                setTotalmoney={setTotalmoney}
+                remainingMoney={remainingMoney}
+              />
+
+            </div>
+          }
+        />
+
+        {/* ================= EXPENSES PAGE ================= */}
+        <Route
+          path="/expenses"
+          element={
+            <div className="app">
+
+              <div style={{ marginBottom: "25px" }}>
+
+                <Link to="/">
+                  <button>
+                    ← Back to Dashboard
                   </button>
-                </div>
+                </Link>
 
-              </li>
-            ))
-          )}
-        </ul>
+              </div>
 
-      </section>
+              <Expenses
+                expenses={expenses}
+                search={search}
+                setSearch={setSearch}
+                filterCategory={filterCategory}
+                setFilterCategory={setFilterCategory}
+                startEdit={startEdit}
+                deleteExpense={deleteExpense}
+              />
 
-      {/* Budget Management */}
-      <BudgetManagement
-        totalmoney={totalmoney}
-        setTotalmoney={setTotalmoney}
-        remainingMoney={remainingMoney}
-      />
+            </div>
+          }
+        />
 
-    </div>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
