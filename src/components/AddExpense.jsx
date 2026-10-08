@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function AddExpense({
   date,
   setDate,
@@ -16,7 +18,6 @@ function AddExpense({
       <h2>{editExpense ? "Update Expense" : "Add Expense"}</h2>
 
       <div className="input-container">
-
         <input
           type="date"
           value={date}
@@ -51,7 +52,14 @@ function AddExpense({
         <button onClick={editExpense ? updateExpense : addExpense}>
           {editExpense ? "Update Expense" : "Add Expense"}
         </button>
+      </div>
 
+      <div className="view-expenses-container">
+        <Link to="/expenses">
+          <button className="view-expenses-button">
+            View All Expenses
+          </button>
+        </Link>
       </div>
     </section>
   );

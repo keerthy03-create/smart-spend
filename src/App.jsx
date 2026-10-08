@@ -180,6 +180,9 @@ function App() {
       amount,
     })
   );
+  const recentExpenses = [...expenses]
+  .sort((a, b) => new Date(b.date) - new Date(a.date))
+  .slice(0, 2);
 
   // ================= BUDGET PERCENTAGE =================
 
@@ -227,7 +230,73 @@ function App() {
                 updateExpense={updateExpense}
                 addExpense={addExpense}
               />
+      {/* ================= RECENT TRANSACTIONS ================= */}
 
+<section className="recent-transactions">
+
+  <div className="recent-transactions-header">
+
+    <div>
+      <h2>Recent Transactions</h2>
+
+    </div>
+
+  </div>
+
+  {recentExpenses.length === 0 ? (
+
+    <div className="empty-message">
+      No transactions yet.
+    </div>
+
+  ) : (
+
+    <ul>
+
+      {recentExpenses.map((expense, index) => (
+
+        <li key={expense.date + expense.description + index}>
+
+          <div className="recent-expense-name">
+
+            <strong>
+              {expense.description}
+            </strong>
+
+            <span>
+              {expense.category}
+            </span>
+
+          </div>
+
+          <div className="recent-expense-date">
+
+            {new Date(expense.date).toLocaleDateString(
+              "en-IN",
+              {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              }
+            )}
+
+          </div>
+
+          <div className="recent-expense-amount">
+
+            ₹{expense.amount}
+
+          </div>
+
+        </li>
+
+      ))}
+
+    </ul>
+
+  )}
+
+</section>
               {/* ================= ANALYTICS ================= */}
 
               <div className="analytics">
@@ -310,20 +379,6 @@ function App() {
                   </p>
 
                 </div>
-
-              </div>
-
-              {/* ================= VIEW EXPENSES ================= */}
-
-              <div style={{ marginBottom: "30px" }}>
-
-                <Link to="/expenses">
-
-                  <button>
-                    View All Expenses
-                  </button>
-
-                </Link>
 
               </div>
 

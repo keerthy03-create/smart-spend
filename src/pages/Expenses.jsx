@@ -51,7 +51,8 @@ function Expenses({
               : "No matching expenses found."}
           </li>
         ) : (
-          filteredExpenses.map((i, index) => (
+          [...filteredExpenses].sort((a,b)=> new Date(b.date)- new Date(a.date))
+          .map((i, index) => (
             <li key={i.date + i.description + index}>
               <div className="expense-name">
                 <strong>{i.description}</strong>

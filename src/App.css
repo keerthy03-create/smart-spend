@@ -488,3 +488,94 @@ body {
     width: 100%;
   }
 }
+.view-expenses-container {
+  margin-top: 20px;
+}
+
+.view-expenses-button {
+  background: #4f46e5;
+}
+
+.view-expenses-button:hover {
+  opacity: 0.9;
+}
+/* ================= RECENT TRANSACTIONS ================= */
+
+.recent-transactions {
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 30px;
+}
+
+.recent-transactions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.recent-transactions-header h2 {
+  margin-bottom: 5px;
+  color: #1f2937;
+}
+
+.recent-transactions-header p {
+  color: #9ca3af;
+}
+
+.recent-transactions-header a {
+  color: #4f46e5;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.recent-transactions ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recent-transactions li {
+  display: grid;
+  grid-template-columns: 2fr 1fr auto;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.recent-transactions li:last-child {
+  border-bottom: none;
+}
+
+.recent-expense-name {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.recent-expense-name strong {
+  color: #1f2937;
+}
+
+.recent-expense-name span {
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.recent-expense-date {
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.recent-expense-amount {
+  color: #1f2937;
+  font-size: 16px;
+  font-weight: 600;
+}
