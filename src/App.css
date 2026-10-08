@@ -447,6 +447,43 @@ body {
   .progress-bar {
     background: #374151;
   }
+    .recent-transactions {
+    background: #1f2937;
+    border-color: #374151;
+  }
+
+  .recent-transactions-header h2 {
+    color: #f9fafb;
+  }
+
+  .recent-transactions-header p {
+    color: #d1d5db;
+  }
+
+  .recent-transactions-header a {
+    color: #a5b4fc;
+  }
+
+  .recent-transactions li {
+    border-bottom-color: #374151;
+  }
+
+  .recent-expense-name strong {
+    color: #f9fafb;
+  }
+
+  .recent-expense-name span {
+    background: #374151;
+    color: #d1d5db;
+  }
+
+  .recent-expense-date {
+    color: #9ca3af;
+  }
+
+  .recent-expense-amount {
+    color: #f9fafb;
+  }
 }
 /* Budget Input Inside Dashboard Card */
 
