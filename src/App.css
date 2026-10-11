@@ -683,3 +683,18 @@ body {
     color: #a5b4fc;
   }
 }
+/* Recent Transactions - Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .recent-transactions {
+    background-color: #1f2937;
+    color: #f9fafb;
+    border-color: #374151;
+  }
+
+  .recent-transactions h2,
+  .recent-transactions h3,
+  .recent-transactions p,
+  .recent-transactions span {
+    color: #f9fafb;
+  }
+}
