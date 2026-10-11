@@ -12,6 +12,7 @@ function AddExpense({
   editExpense,
   updateExpense,
   addExpense,
+  setActiveTab,
 }) {
   return (
     <section className="expense-form">
@@ -55,11 +56,11 @@ function AddExpense({
       </div>
 
       <div className="view-expenses-container">
-        <Link to="/expenses">
-          <button className="view-expenses-button">
+      
+          <button  type="button" className="view-expenses-button" onClick={() => setActiveTab("expenses")}>
             View All Expenses
           </button>
-        </Link>
+    
       </div>
     </section>
   );

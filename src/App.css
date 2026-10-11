@@ -616,3 +616,70 @@ body {
   font-size: 16px;
   font-weight: 600;
 }
+
+
+/* BOTTOM NAVIGATION */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px 8px;
+  background: #4f46e5;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  flex: 1;
+  color:white;
+  border:none;
+  text-decoration: none;
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  background: transparent;
+  border:none;
+}
+
+.nav-item svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.8;
+}
+
+.nav-item.active {
+  color: white;
+  font-weight: 600;
+}
+
+/* Keep page content above the fixed navigation */
+.app {
+  padding-bottom: 90px;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .bottom-nav {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+
+  .nav-item {
+    color: #9ca3af;
+  }
+
+  .nav-item.active {
+    color: #a5b4fc;
+  }
+}
